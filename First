@@ -1,0 +1,133 @@
+#include <stdio.h>
+#include <malloc.h>
+#include <stdlib.h>
+#include <string.h>
+typedef struct Node
+{
+    char name[10];
+    int scroe;
+    struct Node* pNext;
+}NODE, *PNODE;          //NODE表示struct Node   PNODE表示struct Node*
+PNODE create_list(void)     //返回一个struct Node类型
+{
+    int len;  //链表长度
+    int i;
+    int val; //临时存放数据
+    char name[9];  //临时存放数据
+    PNODE pHead=(PNODE)malloc(sizeof(NODE));
+    if(NULL==pHead)
+    {
+        printf("分配失败，退出程序\n");
+        exit(-1);
+    }
+    PNODE pTail=pHead;
+    pTail->pNext=NULL;
+    printf("请输入人数  ");
+    scanf("%d",&len);
+    for(i=0;i<len;++i)
+    {
+        printf("请输入第%d号同学的姓名\n",i+1);
+        scanf("%s",name);
+        printf("请输入第%d号同学的分数\n",i+1);
+        scanf("%d",&val);
+        PNODE pNew=(PNODE)malloc(sizeof(NODE));
+        if(NULL==pNew)
+        {
+            printf("分配失败，退出程序\n");
+            exit(-2);
+        }
+        strcpy(pNew->name,name);    //这里字符数组不能直接赋值  要用strcpy函数复制
+        pNew->scroe=val;
+        pTail->pNext=pNew;
+        pNew->pNext=NULL;
+        pTail=pNew;
+    }
+    return pHead;
+}
+void traverse_list(PNODE pHead)
+{
+    PNODE p=pHead->pNext;
+    while (NULL != p)
+    {
+        printf("%s  %d\n",p->name,p->scroe);
+        p=p->pNext;
+    }
+    printf("\n");
+    return;
+}
+void delete_list(PNODE pHead)
+{
+
+}
+void insert_list(PNODE pHead)
+{
+    int a;
+    int i;
+    char name[10];
+    int val;
+    PNODE p=pHead;
+    PNODE pNew=(PNODE)malloc(sizeof(NODE));
+    printf("请输入要插入数据的同学的号数\n");
+    scanf("%d",&i);
+    for(a=0;a<i-1;a++)
+    {
+        p=p->pNext;
+    }
+    printf("请输入第%d号同学的姓名\n",i);
+    scanf("%s",name);
+    printf("请输入第%d号同学的分数\n",i);
+    scanf("%d",&val);
+    strcpy(pNew->name,name);
+    pNew->scroe=val;
+    pNew->pNext=p->pNext;
+    p->pNext=pNew;
+}
+int main()
+{
+    PNODE pHead;
+    int a;
+    while(1)
+    {
+       printf("\t\t\t\t1.链表的创建\n\t\t\t\t2.链表的遍历\n\t\t\t\t3.链表的插入\n\t\t\t\t4.链表的删除\n");
+       printf("请输入该功能对应数字\n");
+       a=getch();
+       if(a=='1')     //主要1是一个字符 要用单引号
+       {
+           pHead=create_list();
+       }
+       else if(a=='2')
+       {
+           traverse_list(pHead);
+       }
+       else if(a=='3')
+       {
+           insert_list(pHead);
+       }
+       else if(a=='4')
+       {
+           delete_list(pHead);
+       }
+       else
+       {
+           printf("出错啦！\n");
+       }
+      /*  printf("请输入该功能对应数字，按回车进入\n");
+        scanf("%d",&a);
+        switch(a)
+        {
+            case 1:
+                pHead=create_list();
+                break;
+            case 2:
+                traverse_list(pHead);
+                break;
+            case 3:
+                insert_list(pHead);
+                break;
+            case 4:
+                delete_list(pHead);
+                break;
+        } */
+    }
+    return 0;
+}
