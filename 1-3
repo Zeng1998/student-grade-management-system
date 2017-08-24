@@ -1,0 +1,177 @@
+#include <stdio.h>
+#include <malloc.h>
+#include <stdlib.h>
+#include <string.h>
+typedef struct Node
+{
+    char name[10];
+    int scroe;
+    int num;
+    struct Node* pNext;
+}NODE, *PNODE;          //NODE表示struct Node   PNODE表示struct Node*
+    int len; //链表长度
+PNODE create_list(int len)     //返回一个struct Node类型
+{
+    int i;
+    int val; //临时存放数据
+    char name[9];  //临时存放数据
+    PNODE pHead=(PNODE)malloc(sizeof(NODE));
+    if(NULL==pHead)
+    {
+        printf("分配失败，退出程序\n");
+        exit(-1);
+    }
+    PNODE pTail=pHead;
+    pTail->pNext=NULL;
+    for(i=0;i<len;++i)
+    {
+        printf("请输入第%d号同学的姓名\n",i+1);
+        scanf("%s",name);
+        printf("请输入第%d号同学的分数\n",i+1);
+        scanf("%d",&val);
+        PNODE pNew=(PNODE)malloc(sizeof(NODE));
+        if(NULL==pNew)
+        {
+            printf("分配失败，退出程序\n");
+            exit(-2);
+        }
+        pNew->num=i+1;
+        strcpy(pNew->name,name);    //这里字符数组不能直接赋值  要用strcpy函数复制
+        pNew->scroe=val;
+        pTail->pNext=pNew;
+        pNew->pNext=NULL;
+        pTail=pNew;
+    }
+    return pHead;
+}
+void traverse_list(PNODE pHead)
+{
+    PNODE p=pHead->pNext;
+    int i=1;
+    printf("号数  姓名    成绩\n");
+    while (NULL != p)
+    {
+        printf("%3d    %3s    %3d\n",p->num,p->name,p->scroe);
+        p=p->pNext;
+    }
+    printf("\n");
+    return;
+}
+void delete_list(PNODE pHead)
+{
+    int a;
+    int i;
+    char name[10];
+    int val;
+    int num;
+    PNODE q=(PNODE)malloc(sizeof(NODE));
+    PNODE p=pHead;
+    printf("请输入要删除数据的同学的号数\n");
+    scanf("%d",&i);
+    for(a=0;a<i-1;a++)
+    {
+        p=p->pNext;
+    }
+    q=p->pNext;
+    val=p->pNext->scroe;
+    num=p->pNext->num;
+    strcpy(name,p->pNext->name);
+    p->pNext=q->pNext;
+    free(q);
+    return;
+}
+void insert_list(PNODE pHead)
+{
+    int a;
+    int i;
+    char name[10];
+    int val;
+    PNODE p=pHead;
+    PNODE pNew=(PNODE)malloc(sizeof(NODE));
+    printf("请输入要插入数据的同学的号数\n");
+    scanf("%d",&i);
+    pNew->num=i;
+    for(a=0;a<i-1;a++)
+    {
+        p=p->pNext;
+    }
+    printf("请输入第%d号同学的姓名\n",i);
+    scanf("%s",name);
+    printf("请输入第%d号同学的分数\n",i);
+    scanf("%d",&val);
+    strcpy(pNew->name,name);
+    pNew->scroe=val;
+    pNew->pNext=p->pNext;
+    p->pNext=pNew;
+}
+void sort_list(PNODE pHead,int len)
+{
+    int a,b;
+    PNODE p=pHead->pNext;
+    PNODE pSort=(PNODE)malloc(sizeof(NODE));
+    for(a=0;a<len-1;a++)
+    {
+        p=pHead->pNext;
+        for(b=0;b<len-1-a;b++)
+        {
+            if(p->scroe<p->pNext->scroe)
+            {
+                pSort->scroe=p->scroe;
+                p->scroe=p->pNext->scroe;
+                p->pNext->scroe=pSort->scroe;
+                //pSort->num=p->num;
+                //p->num=p->pNext->num;
+                //p->pNext->num=pSort->num;
+                strcpy(pSort->name,p->name);
+                strcpy(p->name,p->pNext->name);
+                strcpy(p->pNext->name,pSort->name);
+                p=p->pNext;
+            }
+        }
+    }
+    printf("排序成功\n");
+    return;
+}
+int main()
+{
+    PNODE pHead;
+    int a;
+    int len;
+    while(1)
+    {
+       printf("\t\t\t\t0.退出系统\n\t\t\t\t1.链表的创建\n\t\t\t\t2.链表的遍历\n\t\t\t\t3.链表的插入\n\t\t\t\t4.链表的删除\n\t\t\t\t5.成绩排序\n");
+       printf("请输入该功能对应数字(无需回车键)\n");
+       a=getch();
+       if(a=='0')
+       {
+           break;
+       }
+       else if(a=='1')     //主要1是一个字符 要用单引号
+       {
+           printf("请输入人数  ");
+           scanf("%d",&len);
+           pHead=create_list(len);
+       }
+       else if(a=='2')
+       {
+           traverse_list(pHead);
+       }
+       else if(a=='3')
+       {
+           insert_list(pHead);
+       }
+       else if(a=='4')
+       {
+           delete_list(pHead);
+       }
+       else if(a=='5')
+       {
+           sort_list(pHead,len);
+       }
+       else
+       {
+           printf("请输入该功能对应数字(无需回车键)\n");
+       }
+    }
+    return 0;
+}
