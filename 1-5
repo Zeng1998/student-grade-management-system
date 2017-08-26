@@ -1,0 +1,188 @@
+#include <stdio.h>
+#include <malloc.h>
+#include <stdlib.h>
+#include <string.h>
+struct Student
+{
+    char name[10];                       //  ->只能用在指针   结构实体用.
+    int scroe;
+    int num;
+};
+typedef struct Node
+{
+    struct Student st;
+    struct Node* pNext;
+}NODE, *PNODE;          //NODE表示struct Node   PNODE表示struct Node*
+PNODE create_list(int len)     //返回一个struct Node类型
+{
+    int i;
+    NODE stu;
+    PNODE pHead=(PNODE)malloc(sizeof(NODE));
+    if(NULL==pHead)
+    {
+        printf("分配失败，退出程序\n");
+        exit(-1);
+    }
+    PNODE pTail=pHead;
+    pTail->pNext=NULL;
+    for(i=0;i<len;++i)
+    {
+        printf("请输入第%d号同学的姓名\n",i+1);
+        scanf("%s",stu.st.name);
+        printf("请输入第%d号同学的分数\n",i+1);
+        scanf("%d",&stu.st.scroe);
+        PNODE pNew=(PNODE)malloc(sizeof(NODE));
+        if(NULL==pNew)
+        {
+            printf("分配失败，退出程序\n");
+            exit(-2);
+        }
+        stu.st.num=i+1;
+        pNew->st=stu.st;
+        pTail->pNext=pNew;
+        pNew->pNext=NULL;
+        pTail=pNew;
+    }
+    return pHead;
+}
+void traverse_list(PNODE pHead)
+{
+    PNODE p=pHead->pNext;
+    printf("号数  姓名    成绩\n");
+    while (NULL != p)
+    {
+        printf("%3d    %3s    %3d\n",p->st.num,p->st.name,p->st.scroe);
+        p=p->pNext;
+    }
+    printf("\n");
+    return;
+}
+void sort_num_list(PNODE pHead)               //用这个函数使插入学生数据后学号不乱
+{
+    PNODE p,q;
+    NODE pSort;
+    for(p=pHead->pNext;NULL!=p;p=p->pNext)
+    {
+        for(q=p->pNext;NULL!=q;q=q->pNext)
+        {
+            if(p->st.num>q->st.num)
+            {
+                pSort.st=p->st;
+                p->st=q->st;
+                q->st=pSort.st;
+            }
+        }
+    }
+    printf("排序成功\n");
+    return;
+}
+void delete_list(PNODE pHead)
+{
+    sort_num_list(pHead);
+    int a;
+    NODE stu;
+    PNODE q=(PNODE)malloc(sizeof(NODE));
+    PNODE p=pHead;
+    printf("请输入要删除数据的同学的号数\n");
+    scanf("%d",&stu.st.num);
+    for(a=0;a<stu.st.num-1;a++)
+    {
+        p=p->pNext;
+    }
+    q=p->pNext;
+    stu.st.scroe=p->pNext->st.scroe;
+    stu.st.num=p->pNext->st.num;
+    strcpy(stu.st.name,p->pNext->st.name);
+    p->pNext=q->pNext;
+    free(q);
+    return ;
+}
+void insert_list(PNODE pHead)
+{
+    sort_num_list(pHead);
+    int a;
+    NODE stu;
+    PNODE p=pHead;
+    PNODE pNew=(PNODE)malloc(sizeof(NODE));
+    printf("请输入要插入数据的同学的号数\n");
+    scanf("%d",&stu.st.num);
+    for(a=0;a<stu.st.num-1;a++)
+    {
+        p=p->pNext;
+    }
+    printf("请输入第%d号同学的姓名\n",stu.st.num);
+    scanf("%s",stu.st.name);
+    printf("请输入第%d号同学的分数\n",stu.st.num);
+    scanf("%d",&stu.st.scroe);
+    pNew->st=stu.st;
+    pNew->pNext=p->pNext;
+    p->pNext=pNew;
+    PNODE q;
+    for(q=pNew;q->pNext!=NULL;q=q->pNext)
+    {
+        q->pNext->st.num+=1;
+    }
+    return ;
+}
+void sort_list(PNODE pHead)
+{
+    PNODE p,q;
+    NODE pSort;
+    for(p=pHead->pNext;NULL!=p;p=p->pNext)
+    {
+        for(q=p->pNext;NULL!=q;q=q->pNext)
+        {
+            if(p->st.scroe<q->st.scroe)
+            {
+                pSort.st=p->st;
+                p->st=q->st;
+                q->st=pSort.st;
+            }
+        }
+    }
+    printf("排序成功\n");
+    return;
+}
+int main()
+{
+    PNODE pHead;
+    int a;
+    int len;
+    while(1)
+    {
+       printf("\t\t\t\t0.退出系统\n\t\t\t\t1.链表的创建\n\t\t\t\t2.链表的遍历\n\t\t\t\t3.链表的插入\n\t\t\t\t4.链表的删除\n\t\t\t\t5.成绩排序\n");
+       printf("请输入该功能对应数字(无需回车键)\n");
+       a=getch();
+       if(a=='0')
+       {
+           break;
+       }
+       else if(a=='1')     //主要1是一个字符 要用单引号
+       {
+           printf("请输入人数  ");
+           scanf("%d",&len);
+           pHead=create_list(len);
+       }
+       else if(a=='2')
+       {
+           traverse_list(pHead);
+       }
+       else if(a=='3')
+       {
+           insert_list(pHead);
+       }
+       else if(a=='4')
+       {
+           delete_list(pHead);
+       }
+       else if(a=='5')
+       {
+           sort_list(pHead);
+       }
+       else
+       {
+           printf("请输入该功能对应数字(无需回车键)\n");
+       }
+    }
+    return 0;
+}
